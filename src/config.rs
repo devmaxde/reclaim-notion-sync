@@ -1,19 +1,16 @@
-use std::fs;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::fs;
 
 #[derive(Deserialize, Debug)]
-pub enum SyncPriority{
+pub enum SyncPriority {
     NOTION,
-    RECLAIM
+    RECLAIM,
 }
-
-
-
 
 impl Serialize for SyncPriority {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: Serializer
+        S: Serializer,
     {
         serializer.serialize_str(match self {
             SyncPriority::NOTION => "Notion",
@@ -22,31 +19,27 @@ impl Serialize for SyncPriority {
     }
 }
 
-
-
 #[derive(Deserialize, Serialize, Debug)]
-pub struct DatabaseConfig{
+pub struct DatabaseConfig {
     database_id: String,
-    sync_priority: SyncPriority
+    sync_priority: SyncPriority,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct SyncConfig{
+pub struct SyncConfig {
     reclaim_api_key: String,
     notion_api_key: String,
-    databases: Vec<DatabaseConfig>
+    databases: Vec<DatabaseConfig>,
 }
 
 #[derive(Debug)]
-pub enum SyncConfigError{
+pub enum SyncConfigError {
     FileNotFound,
-    FileInvalid
+    FileInvalid,
 }
 
 impl SyncConfig {
-
-    pub fn from_config_file(
-    ) -> Result<SyncConfig, SyncConfigError> {
+    pub fn from_config_file() -> Result<SyncConfig, SyncConfigError> {
         let config_path = "./config.toml";
         let example_path = "./config_example.toml";
 
@@ -56,22 +49,25 @@ impl SyncConfig {
             return Err(SyncConfigError::FileNotFound);
         }
         let config_file = config_file.unwrap();
-        let sync_config: SyncConfig = toml::from_str(&config_file).map_err(|_| SyncConfigError::FileInvalid)?;
+        let sync_config: SyncConfig =
+            toml::from_str(&config_file).map_err(|_| SyncConfigError::FileInvalid)?;
         Ok(sync_config)
     }
 
-
     pub fn create_example_config_file(path: String, force_create: bool) {
-        let wing_config = SyncConfig{
+        let wing_config = SyncConfig {
             reclaim_api_key: "RECLAIM_API_KEY".to_string(),
             notion_api_key: "NOTION_API_KEY".to_string(),
-            databases: vec![DatabaseConfig{
-                database_id: "DATABASE_01".to_string(),
-                sync_priority: SyncPriority::NOTION,
-            }, DatabaseConfig{
-                database_id: "DATABASE_02".to_string(),
-                sync_priority: SyncPriority::RECLAIM,
-            }],
+            databases: vec![
+                DatabaseConfig {
+                    database_id: "DATABASE_01".to_string(),
+                    sync_priority: SyncPriority::NOTION,
+                },
+                DatabaseConfig {
+                    database_id: "DATABASE_02".to_string(),
+                    sync_priority: SyncPriority::RECLAIM,
+                },
+            ],
         };
         let toml = toml::to_string(&wing_config).unwrap();
 
