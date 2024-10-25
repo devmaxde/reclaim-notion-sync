@@ -1,0 +1,13 @@
+[package]
+name = "notion-reclaim-sync"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.39.2", features = ["full"] }
+reclaim-ai = {path = "../reclaim-ai-rust"}
+schemars = "0.8.21"
+serde = { version = "1.0.197", features = ["derive", "rc"] }
+serde_json = "1.0.114"
+serde_toml = "0.0.1"
+toml = "0.8.19"
