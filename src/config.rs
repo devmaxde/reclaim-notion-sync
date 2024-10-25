@@ -1,7 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fs;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub enum SyncPriority {
     NOTION,
     RECLAIM,
@@ -13,23 +13,23 @@ impl Serialize for SyncPriority {
         S: Serializer,
     {
         serializer.serialize_str(match self {
-            SyncPriority::NOTION => "Notion",
-            SyncPriority::RECLAIM => "Reclaim",
+            SyncPriority::NOTION => "NOTION",
+            SyncPriority::RECLAIM => "RECLAIM",
         })
     }
 }
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct DatabaseConfig {
-    database_id: String,
-    sync_priority: SyncPriority,
+    pub notion_database_id: String,
+    pub sync_priority: SyncPriority,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct SyncConfig {
-    reclaim_api_key: String,
-    notion_api_key: String,
-    databases: Vec<DatabaseConfig>,
+    pub reclaim_api_key: String,
+    pub notion_api_key: String,
+    pub databases: Vec<DatabaseConfig>,
 }
 
 #[derive(Debug)]
@@ -50,7 +50,7 @@ impl SyncConfig {
         }
         let config_file = config_file.unwrap();
         let sync_config: SyncConfig =
-            toml::from_str(&config_file).map_err(|_| SyncConfigError::FileInvalid)?;
+            toml::from_str(&config_file).map_err(|e| SyncConfigError::FileInvalid)?;
         Ok(sync_config)
     }
 
@@ -60,11 +60,11 @@ impl SyncConfig {
             notion_api_key: "NOTION_API_KEY".to_string(),
             databases: vec![
                 DatabaseConfig {
-                    database_id: "DATABASE_01".to_string(),
+                    notion_database_id: "DATABASE_01".to_string(),
                     sync_priority: SyncPriority::NOTION,
                 },
                 DatabaseConfig {
-                    database_id: "DATABASE_02".to_string(),
+                    notion_database_id: "DATABASE_02".to_string(),
                     sync_priority: SyncPriority::RECLAIM,
                 },
             ],

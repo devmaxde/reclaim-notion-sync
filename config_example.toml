@@ -2,9 +2,9 @@ reclaim_api_key = "RECLAIM_API_KEY"
 notion_api_key = "NOTION_API_KEY"
 
 [[databases]]
-database_id = "DATABASE_01"
-sync_priority = "Notion"
+notion_database_id = "DATABASE_01"
+sync_priority = "NOTION"
 
 [[databases]]
-database_id = "DATABASE_02"
-sync_priority = "Reclaim"
+notion_database_id = "DATABASE_02"
+sync_priority = "RECLAIM"
